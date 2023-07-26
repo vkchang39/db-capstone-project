@@ -1,0 +1,17 @@
+check the model and query in main folder, you can find view query in that.
+
+here is it too if you feel lazy:
+
+CREATE VIEW `OrdersView` AS
+SELECT
+  o.`id` AS `order_id`,
+  oi.`quantity`,
+  (oi.`quantity` * m.`price`) AS `cost`
+FROM
+  `LittleLemonDB`.`orders` o
+JOIN
+  `LittleLemonDB`.`order_item` oi ON o.`id` = oi.`orders_id`
+JOIN
+  `LittleLemonDB`.`menu` m ON oi.`menu_id` = m.`id`
+WHERE
+  oi.`quantity` > 2;

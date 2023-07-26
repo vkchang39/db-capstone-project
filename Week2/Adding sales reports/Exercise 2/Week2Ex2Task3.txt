@@ -1,0 +1,29 @@
+MySQL Query:
+
+
+DELIMITER //
+
+CREATE PROCEDURE CancelOrder(IN OrderID INT)
+BEGIN
+    -- Find the delivery_status_id for "cancelled" status
+    DECLARE cancelled_status_id INT;
+    SELECT id INTO cancelled_status_id
+    FROM delivery_status
+    WHERE status = 'cancelled';
+
+    -- Update the delivery_status_id in Orders table
+    UPDATE Orders
+    SET delivery_status_id = cancelled_status_id
+    WHERE id = OrderID;
+
+    IF ROW_COUNT() > 0 THEN
+        SELECT CONCAT('Order (', OrderID, ') is Cancelled') AS confirmation;
+    ELSE
+        SELECT 'Order not found or already cancelled.' AS confirmation;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+CALL CancelOrder(6);

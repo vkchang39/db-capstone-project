@@ -1,0 +1,32 @@
+MySQL Query:
+
+
+SELECT
+
+m.name AS MenuName
+
+FROM
+
+menu m
+
+WHERE
+
+m.id IN (
+
+SELECT
+
+oi.menu_id
+
+FROM
+
+order_item oi
+
+GROUP BY
+
+oi.menu_id
+
+HAVING
+
+COUNT(oi.orders_id) > 2
+
+);

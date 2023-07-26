@@ -1,0 +1,29 @@
+MySQL Query:
+
+
+DELIMITER //
+
+CREATE PROCEDURE GetOrderDetail(IN CustomerID INT)
+BEGIN
+    PREPARE stmt FROM
+    'SELECT id, quantity, price 
+     FROM order_item 
+     WHERE orders_id IN (
+         SELECT id 
+         FROM orders 
+         WHERE users_id = ?)';
+     
+    SET @cust_id = CustomerID;
+    EXECUTE stmt USING @cust_id;
+    DEALLOCATE PREPARE stmt;
+END //
+
+DELIMITER ;
+
+
+-- Create a variable called id and assign the value of 11
+SET @id = 11;
+
+-- Execute the prepared statement GetOrderDetail with the input argument @id
+CALL GetOrderDetail(@id);
+
