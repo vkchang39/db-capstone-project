@@ -1,0 +1,43 @@
+DELIMITER //
+
+CREATE PROCEDURE AddBooking(
+    IN p_booking_id INT,
+    IN p_user_id INT,
+    IN p_start_time DATETIME,
+    IN p_end_time DATETIME,
+    IN p_table_number INT,
+    OUT p_confirmation_message VARCHAR(255)
+)
+BEGIN
+    DECLARE v_users_id INT;
+    DECLARE v_booking_id INT;
+    DECLARE v_table_id INT;
+    
+    -- Insert into 'booking' table
+    INSERT INTO `LittleLemonDB`.`booking` (`id`, `start_time`, `end_time`, `status`)
+    VALUES (p_booking_id, p_start_time, p_end_time, 'Active');
+    
+    -- Get the user's id from 'users' table
+    SELECT `id` INTO v_users_id FROM `LittleLemonDB`.`users` WHERE `id` = p_user_id LIMIT 1;
+    
+    -- Insert into 'orders' table using the provided booking id (p_booking_id)
+    INSERT INTO `LittleLemonDB`.`orders` (`id`, `users_id`, `booking_id`, `delivery_status_id`, `TotalCost`)
+    VALUES (p_booking_id, v_users_id, p_booking_id, 1, 0); -- Assuming delivery_status_id 1 represents 'Not Delivered'
+    
+    -- Insert into 'tables' table
+    INSERT INTO `LittleLemonDB`.`tables` (`id`, `booking_id`)
+    VALUES (p_table_number, p_booking_id);
+    
+    SET p_confirmation_message = CONCAT('New Booking with ID ', p_booking_id, ' added successfully.');
+END //
+
+DELIMITER ;
+
+
+
+
+
+
+SET @confirmation_message = '';
+CALL AddBooking(7, 11, '2023-07-27 14:00:00', '2023-07-27 16:00:00', 5, @confirmation_message);
+SELECT @confirmation_message;

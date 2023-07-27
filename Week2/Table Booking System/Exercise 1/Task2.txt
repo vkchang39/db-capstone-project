@@ -1,0 +1,21 @@
+DELIMITER //
+
+CREATE PROCEDURE CheckBooking(IN BookingDate DATE, IN TableNumber INT)
+BEGIN
+    DECLARE table_status VARCHAR(20);
+
+    -- Check if the table is booked for the provided date and table number
+    SELECT IFNULL(status, 'Available') INTO table_status
+    FROM booking
+    WHERE DATE(start_time) = BookingDate AND id IN (
+        SELECT booking_id
+        FROM tables
+        WHERE id = TableNumber
+    );
+
+    SELECT CONCAT('Table ', TableNumber, ' is ', table_status, ' on ', BookingDate) AS status_message;
+END //
+
+DELIMITER ;
+
+CALL CheckBooking('2023-07-27 14:00:00', 1)

@@ -1,0 +1,34 @@
+DELIMITER //
+
+CREATE PROCEDURE CancelBooking(
+    IN p_booking_id INT,
+    OUT p_confirmation_message VARCHAR(255)
+)
+BEGIN
+    -- Declare a variable to store the count of updated rows
+    DECLARE v_rows_updated INT;
+    
+    -- Update the 'booking' table to set the status to 'Cancelled'
+    UPDATE `LittleLemonDB`.`booking`
+    SET `status` = 'Cancelled'
+    WHERE `id` = p_booking_id;
+    
+    -- Get the count of updated rows
+    SET v_rows_updated = ROW_COUNT();
+    
+    -- Check if any rows were updated
+    IF v_rows_updated > 0 THEN
+        SET p_confirmation_message = CONCAT('Booking with ID ', p_booking_id, ' has been cancelled successfully.');
+    ELSE
+        SET p_confirmation_message = CONCAT('No booking found with ID ', p_booking_id, '. Cancellation operation failed.');
+    END IF;
+END //
+
+DELIMITER ;
+
+-- Call the procedure with the booking ID and capture the confirmation message
+SET @confirmation_message = '';
+CALL CancelBooking(1, @confirmation_message);
+
+-- Display the confirmation message
+SELECT @confirmation_message;

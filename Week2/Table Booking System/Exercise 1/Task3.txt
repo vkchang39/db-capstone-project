@@ -1,0 +1,34 @@
+DELIMITER //
+
+CREATE PROCEDURE AddValidBooking(IN BookingDate DATE, IN TableNumber INT)
+BEGIN
+    DECLARE table_status INT;
+    
+    START TRANSACTION;
+    
+    -- Check if the table is already booked on the given date
+    SELECT COUNT(*) INTO table_status
+    FROM booking
+    WHERE DATE(start_time) = BookingDate AND id IN (
+        SELECT booking_id
+        FROM tables
+        WHERE id = TableNumber
+    );
+
+    IF table_status > 0 THEN
+        -- Rollback the transaction if the table is already booked
+        ROLLBACK;
+        SELECT 'Booking declined. The table is already booked on ' AS message, BookingDate AS booking_date, ' for Table ' AS table_text, TableNumber AS table_num;
+    ELSE
+        -- Insert a new booking record if the table is available
+        INSERT INTO booking (start_time, end_time, status)
+        VALUES (BookingDate, BookingDate, 'booked');
+        COMMIT;
+        SELECT 'Booking successful. Table ' AS message, TableNumber AS table_num, ' has been booked on ' AS date_text, BookingDate AS booking_date;
+    END IF;
+END //
+
+DELIMITER ;
+
+
+CALL AddValidBooking('2023-07-28', 3 )

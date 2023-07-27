@@ -1,0 +1,40 @@
+DELIMITER //
+
+CREATE PROCEDURE UpdateBooking(
+    IN p_booking_id INT,
+    IN p_booking_date DATETIME,
+    OUT p_confirmation_message VARCHAR(255)
+)
+BEGIN
+    -- Declare a variable to store the count of updated rows
+    DECLARE v_rows_updated INT;
+    
+    -- Update the 'booking' table with the new booking date
+    UPDATE `LittleLemonDB`.`booking`
+    SET `start_time` = p_booking_date
+    WHERE `id` = p_booking_id;
+    
+    -- Get the count of updated rows
+    SET v_rows_updated = ROW_COUNT();
+    
+    -- Check if any rows were updated
+    IF v_rows_updated > 0 THEN
+        SET p_confirmation_message = CONCAT('Booking with ID ', p_booking_id, ' has been updated successfully.');
+    ELSE
+        SET p_confirmation_message = CONCAT('No booking found with ID ', p_booking_id, '. Update operation failed.');
+    END IF;
+END //
+
+DELIMITER ;
+
+
+-- Call the procedure with booking ID and new booking date and capture the confirmation message
+SET @confirmation_message = '';
+CALL UpdateBooking(1, '2023-07-28 15:00:00', @confirmation_message);
+
+-- Display the confirmation message
+SELECT @confirmation_message;
+
+
+
+
