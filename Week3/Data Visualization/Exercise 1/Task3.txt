@@ -1,0 +1,1 @@
+name not showing because bubbles are too small because there are too many fields, limit the fields and you see the desired result but i made the chart on all of the customers.

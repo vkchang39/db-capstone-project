@@ -20,6 +20,7 @@ USE `LittleLemonDB` ;
 CREATE TABLE IF NOT EXISTS `LittleLemonDB`.`users` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
+  `contact_details` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
@@ -29,7 +30,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `LittleLemonDB`.`roles` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `role` VARCHAR(45) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
   `created_at` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
